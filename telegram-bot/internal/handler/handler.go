@@ -135,7 +135,7 @@ func (h *Handler) handleMessage(msg *tgbotapi.Message) {
 		}
 
 		// Отправляем сообщение о получении приза
-		text := fmt.Sprintf("Приз '%s' получен! Ваш код - %s.\nПолучите свой призом с 1 по 31 января.", prize.Prize, code)
+		text := fmt.Sprintf("Приз '%s' получен! Ваш код - %s.\nПолучите свой приз с 1 по 31 января.", prize.Prize, code)
 		prizeMessage := tgbotapi.NewMessage(msg.Chat.ID, text)
 		prizeMessage.ReplyMarkup = tgbotapi.NewRemoveKeyboard(true)
 		_, _ = h.bot.Send(prizeMessage)
