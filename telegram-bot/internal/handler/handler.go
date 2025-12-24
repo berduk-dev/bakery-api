@@ -163,9 +163,10 @@ func (h *Handler) handleMessage(msg *tgbotapi.Message) {
 			current := ""
 
 			for i, u := range users {
-				line := fmt.Sprintf("%d. ID: %d, Создан: %s\n",
+				line := fmt.Sprintf("%d. ID: %d, Телефон: %d, Создан: %s\n",
 					i+1,
 					u.TelegramID,
+					u.Phone,
 					u.CreatedAt.Format("2006-01-02"),
 				)
 				if len(current)+len(line) > maxLen {
