@@ -1,0 +1,34 @@
+# --- Go ---
+/bin/
+/build/
+/dist/
+/out/
+/tmp/
+/coverage/
+/*.exe
+*.test
+*.out
+
+# Модули
+vendor/
+go.work
+go.work.sum
+
+# Кэш
+*.log
+*.tmp
+
+# --- IDE/Editor ---
+.vscode/
+../.idea/
+*.swp
+*.swo
+
+# --- PostgreSQL data ---
+/db_data/
+
+.env
+.sqlite
+.DS_Store
+.idea
+.claude

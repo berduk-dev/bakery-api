@@ -1,0 +1,73 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: postgres_mindal_mood
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-mindal}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-mindal123}
+      - POSTGRES_DB=${POSTGRES_DB:-mindal_db}
+    ports:
+      - "5413:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-mindal} -d ${POSTGRES_DB:-mindal_db}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    image: almond-mood-api:latest
+    container_name: api_mindal_mood
+    ports:
+      - "8091:8080"
+    env_file:
+      - ./.env
+    environment:
+      - APP_ENV=docker
+      - DATABASE_URL=postgres://${POSTGRES_USER:-mindal}:${POSTGRES_PASSWORD:-mindal123}@postgres:5432/${POSTGRES_DB:-mindal_db}?sslmode=disable
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migrations:
+        condition: service_completed_successfully
+    restart: unless-stopped
+
+  migrations:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    image: almond-mood-api:latest
+    container_name: migrations_mindal_mood
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      - DATABASE_URL=postgres://${POSTGRES_USER:-mindal}:${POSTGRES_PASSWORD:-mindal123}@postgres:5432/${POSTGRES_DB:-mindal_db}?sslmode=disable
+    command: sh -c "./goose -dir /app/internal/db/migrations postgres \"$$DATABASE_URL\" up"
+    restart: "no"
+
+  telegram_bot:
+    build:
+      context: ./telegram-bot
+      dockerfile: Dockerfile
+    container_name: telegram_bot_mindal_mood
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migrations:
+        condition: service_completed_successfully
+    restart: unless-stopped
+    env_file:
+      - ./.env
+    environment:
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+      - ADMIN_TELEGRAM_CHAT_ID=${ADMIN_TELEGRAM_CHAT_ID}
+      - DATABASE_URL=postgres://${POSTGRES_USER:-mindal}:${POSTGRES_PASSWORD:-mindal123}@postgres:5432/${POSTGRES_DB:-mindal_db}?sslmode=disable
+
+volumes:
+  postgres_data:
