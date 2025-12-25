@@ -191,7 +191,7 @@ func (r *Repository) IsValidByCode(ctx context.Context, code string) (bool, erro
 
 func (r *Repository) GetUsers(ctx context.Context) ([]model.User, error) {
 	rows, err := r.pool.Query(ctx, `
-		SELECT telegram_id, created_at
+		SELECT telegram_id, phone, created_at
 		FROM users
 		ORDER BY created_at
 	`)
@@ -204,7 +204,7 @@ func (r *Repository) GetUsers(ctx context.Context) ([]model.User, error) {
 
 	for rows.Next() {
 		var user model.User
-		if err := rows.Scan(&user.TelegramID, &user.CreatedAt); err != nil {
+		if err := rows.Scan(&user.TelegramID, &user.Phone, &user.CreatedAt); err != nil {
 			return nil, fmt.Errorf("error scan GetUsers: %w", err)
 		}
 		users = append(users, user)
