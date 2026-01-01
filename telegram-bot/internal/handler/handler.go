@@ -85,7 +85,7 @@ func (h *Handler) handleMessage(msg *tgbotapi.Message) {
 	if msg.Contact != nil {
 		// Проверяем, что пользователь отправил свой контакт
 		if msg.Contact.UserID != msg.From.ID {
-			reply := tgbotapi.NewMessage(msg.Chat.ID, "Пожалуйста, отправьте свой номер телефона")
+			reply := tgbotapi.NewMessage(msg.Chat.ID, "👇 Используйте кнопку ниже для отправки номера")
 			_, _ = h.bot.Send(reply)
 			return
 		}
