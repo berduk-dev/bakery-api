@@ -278,7 +278,7 @@ func (h *Handler) handleMessage(msg *tgbotapi.Message) {
 		h.userPrizeCodes[msg.From.ID] = code
 
 		// Отправляем запрос на получение номера телефона
-		phoneRequestBtn := tgbotapi.NewKeyboardButton("Поделиться номером телефона")
+		phoneRequestBtn := tgbotapi.NewKeyboardButton("📱 Поделиться номером телефона")
 		phoneRequestBtn.RequestContact = true
 		keyboard := tgbotapi.NewReplyKeyboard(
 			tgbotapi.NewKeyboardButtonRow(phoneRequestBtn),
@@ -286,7 +286,7 @@ func (h *Handler) handleMessage(msg *tgbotapi.Message) {
 		keyboard.OneTimeKeyboard = true
 		keyboard.ResizeKeyboard = true
 
-		phoneMessage := tgbotapi.NewMessage(msg.Chat.ID, "Поделитесь номером телефона для получения приза")
+		phoneMessage := tgbotapi.NewMessage(msg.Chat.ID, "👇 Используйте кнопку ниже для отправки номера")
 		phoneMessage.ReplyMarkup = keyboard
 		_, _ = h.bot.Send(phoneMessage)
 		return
